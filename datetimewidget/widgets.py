@@ -1,20 +1,12 @@
-
-__author__ = 'Alfredo Saglimbeni'
-
 from datetime import datetime
 import re
 import uuid
 
 from django.forms import forms, widgets
+from django.forms.widgets import to_current_timezone
 from django.forms.widgets import MultiWidget, DateTimeInput, DateInput, TimeInput
 from django.utils.formats import get_format, get_language
 from django.utils.safestring import mark_safe
-from django.utils.six import string_types
-
-try:
-    from django.forms.widgets import to_current_timezone
-except ImportError:
-    to_current_timezone = lambda obj: obj # passthrough, no tz support
 
 
 # This should be updated as more .po files are added to the datetime picker javascript code
@@ -157,7 +149,7 @@ def quote(key, value):
     numbers so we type check the value before wrapping it in quotes.
     """
 
-    if key in quoted_options and isinstance(value, string_types):
+    if key in quoted_options and isinstance(value, str):
         return "'%s'" % value
 
     if key in quoted_bool_options and isinstance(value, bool):
@@ -330,4 +322,3 @@ class TimeWidget(PickerWidgetMixin, TimeInput):
         options['format'] = options.get('format', 'hh:ii')
 
         super(TimeWidget, self).__init__(attrs, options, usel10n, bootstrap_version)
-

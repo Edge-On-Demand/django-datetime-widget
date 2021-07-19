@@ -1,10 +1,9 @@
-# Create your views here.
-from formexample.form import *
 from django.shortcuts import render
+
+from .form import *
 
 
 def dateTimeView(request):
-
     if request.method == 'POST': # If the form has been submitted...
 
         form = testModelForm(request.POST) # A form bound to the POST data
