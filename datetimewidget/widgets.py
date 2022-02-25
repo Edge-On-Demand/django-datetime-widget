@@ -1,16 +1,13 @@
-from datetime import datetime
 import re
 import uuid
 
-from django.forms import forms, widgets
-from django.forms.widgets import to_current_timezone
-from django.forms.widgets import MultiWidget, DateTimeInput, DateInput, TimeInput
+from django.forms.widgets import DateTimeInput, DateInput, TimeInput, Media
 from django.utils.formats import get_format, get_language
 from django.utils.safestring import mark_safe
 
 
 # This should be updated as more .po files are added to the datetime picker javascript code
-supported_languages = set([
+supported_languages = {
     'ar',
     'bg',
     'ca', 'cs',
@@ -30,7 +27,7 @@ supported_languages = set([
     'th', 'tr',
     'ua', 'uk',
     'zh-CN', 'zh-TW',
-    ])
+}
 
 
 def get_supported_language(language_country_code):
@@ -92,23 +89,23 @@ toJavascript_re = re.compile(r'(?<!\w)(' + '|'.join(dateConversiontoJavascript.k
 
 BOOTSTRAP_INPUT_TEMPLATE = {
     2: """
-       <div id="%(id)s"  class="controls input-append date">
+       <div class="controls input-append date %(id)s">
            %(rendered_widget)s
            %(clear_button)s
            <span class="add-on"><i class="icon-th"></i></span>
        </div>
        <script type="text/javascript">
-           $("#%(id)s").datetimepicker({%(options)s});
+           $(".%(id)s").datetimepicker({%(options)s});
        </script>
        """,
     3: """
-       <div id="%(id)s" class="input-group date">
+       <div class="input-group date %(id)s">
            %(rendered_widget)s
            %(clear_button)s
            <span class="input-group-addon"><span class="glyphicon %(glyphicon)s"></span></span>
        </div>
        <script type="text/javascript">
-           $("#%(id)s").datetimepicker({%(options)s}).find('input').addClass("form-control");
+           $(".%(id)s").datetimepicker({%(options)s}).find('input').addClass("form-control");
        </script>
        """
        }
@@ -117,7 +114,7 @@ CLEAR_BTN_TEMPLATE = {2: """<span class="add-on"><i class="icon-remove"></i></sp
                       3: """<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>"""}
 
 
-quoted_options = set([
+quoted_options = {
     'format',
     'startDate',
     'endDate',
@@ -132,15 +129,15 @@ quoted_options = set([
     'weekStart',
     'minuteStep'
     'daysOfWeekDisabled',
-    ])
+}
 
 # to traslate boolean object to javascript
-quoted_bool_options = set([
+quoted_bool_options = {
     'autoclose',
     'todayHighlight',
     'showMeridian',
     'clearBtn',
-    ])
+}
 
 
 def quote(key, value):
@@ -215,7 +212,7 @@ class PickerWidgetMixin(object):
         final_attrs = self.build_attrs(attrs)
         rendered_widget = super(PickerWidgetMixin, self).render(name, value, final_attrs)
 
-        #if not set, autoclose have to be true.
+        # if not set, autoclose have to be true.
         self.options.setdefault('autoclose', True)
 
         # Build javascript options out of python dictionary
@@ -249,7 +246,7 @@ class PickerWidgetMixin(object):
         if language != 'en':
             js.append("js/locales/bootstrap-datetimepicker.%s.js" % language)
 
-        return widgets.Media(
+        return Media(
             css={
                 'all': ('css/datetimepicker.css',)
                 },
